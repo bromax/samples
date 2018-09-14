@@ -1,19 +1,43 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ExchangeRateUpdater
 {
-    public class ExchangeRateProvider
+    public static class Program
     {
-        /// <summary>
-        /// Should return exchange rates among the specified currencies that are defined by the source. But only those defined
-        /// by the source, do not return calculated exchange rates. E.g. if the source contains "EUR/USD" but not "USD/EUR",
-        /// do not return exchange rate "USD/EUR" with value calculated as 1 / "EUR/USD". If the source does not provide
-        /// some of the currencies, ignore them.
-        /// </summary>
-        public IEnumerable<ExchangeRate> GetExchangeRates(IEnumerable<Currency> currencies)
+        private static IEnumerable<Currency> currencies = new[]
         {
-            return Enumerable.Empty<ExchangeRate>();
+            new Currency("USD"),
+            new Currency("EUR"),
+            new Currency("CZK"),
+            new Currency("JPY"),
+            new Currency("KES"),
+            new Currency("RUB"),
+            new Currency("THB"),
+            new Currency("TRY"),
+            new Currency("XYZ")
+        };
+
+        public static void Main(string[] args)
+        {
+            try
+            {
+                var provider = new ExchangeRateProvider();
+                var rates = provider.GetExchangeRates(currencies);
+
+                Console.WriteLine("Successfully retrieved " + rates.Count() + " exchange rates:");
+                foreach (var rate in rates)
+                {
+                    Console.WriteLine(rate.ToString());
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("An error occurred while retrieving exchange rates: " + e.Message);
+            }
+
+            Console.ReadLine();
         }
     }
 }
